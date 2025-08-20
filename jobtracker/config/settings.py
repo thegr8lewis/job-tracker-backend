@@ -110,8 +110,8 @@ REST_FRAMEWORK = {
 
 # Configure CORS
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Your frontend URL
-    "http://127.0.0.1:3000",
+    "http://localhost:3001",  # Your frontend URL
+    "http://127.0.0.1:3001",
 ]
 
 # For development only - allows cookies
@@ -119,6 +119,6 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Required for CSRF with session auth (if later used)
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
 ]
