@@ -23,13 +23,22 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3001',
-    'http://127.0.0.1:3001',
-    'https://jobtracker-frontendd.onrender.com'
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "https://jobtracker-frontendd.onrender.com",
+    "https://job-tracker-frontendd.onrender.com",  # Note the dash vs no dash
 ]
+
 CORS_ALLOW_ALL_ORIGINS = True  # For development only, tighten for production
 CORS_ALLOW_CREDENTIALS = True
-ALLOWED_HOSTS = [ 'https://jobtracker-frontendd.onrender.com', ]
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'job-tracker-backend-ztii.onrender.com',
+    '.onrender.com',  # Allow all Render subdomains
+]
 
 STORAGES = {
     'default': {

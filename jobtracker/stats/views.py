@@ -30,48 +30,6 @@ class DashboardStatsView(generics.RetrieveAPIView):
 
         return stats
 
-# class AnalyticsView(generics.ListAPIView):
-#     permission_classes = [AllowAny]
-#     serializer_class = AnalyticsDataSerializer
-
-#     def get_queryset(self):
-#         period = self.request.query_params.get('period', '30d')
-
-#         if period == '7d':
-#             days = 7
-#         elif period == '30d':
-#             days = 30
-#         elif period == '90d':
-#             days = 90
-#         else:
-#             days = 30
-
-#         start_date = timezone.now() - timedelta(days=days)
-
-#         # Update or create AnalyticsData for each date
-#         for i in range(days + 1):
-#             date = (start_date + timedelta(days=i)).date()
-#             applications = Application.objects.filter(created_at__date=date).count()
-#             interviews = TimelineEvent.objects.filter(
-#                 event_type='interview',
-#                 date__date=date
-#             ).count()
-#             offers = TimelineEvent.objects.filter(
-#                 event_type='offer',
-#                 date__date=date
-#             ).count()
-
-#             AnalyticsData.objects.update_or_create(
-#                 date=date,
-#                 defaults={
-#                     'applications_count': applications,
-#                     'interviews_count': interviews,
-#                     'offers_count': offers
-#                 }
-#             )
-
-#         return AnalyticsData.objects.filter(date__gte=start_date).order_by('date')
-
 class AnalyticsView(generics.ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = AnalyticsDataSerializer
