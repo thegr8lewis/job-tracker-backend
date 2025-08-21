@@ -127,10 +127,11 @@ REST_FRAMEWORK = {
 
 # Configure CORS
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3001",  # Your frontend URL
+    "http://localhost:3001",
     "http://127.0.0.1:3001",
-    "https://jobtracker-frontend.onrender.com"
+    "https://jobtracker-frontendd.onrender.com",  # <-- correct deployed frontend URL
 ]
+
 
 # For development only - allows cookies
 CORS_ALLOW_CREDENTIALS = True
@@ -139,5 +140,5 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3001",
     "http://127.0.0.1:3001",
-    "https://jobtracker-frontendd.onrender.com"
+    "https://jobtracker-frontendd.onrender.com",  # <-- match frontend URL exactly
 ]
