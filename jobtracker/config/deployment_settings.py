@@ -25,10 +25,11 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3001',
     'http://127.0.0.1:3001',
+    'https://jobtracker-frontendd.onrender.com'
 ]
 CORS_ALLOW_ALL_ORIGINS = True  # For development only, tighten for production
 CORS_ALLOW_CREDENTIALS = True
-ALLOWED_HOSTS = [ 'http://safespacekenya.onrender.com', ]
+ALLOWED_HOSTS = [ 'https://jobtracker-frontendd.onrender.com', ]
 
 STORAGES = {
     'default': {
