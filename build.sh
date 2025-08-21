@@ -6,7 +6,7 @@ set -o errexit
 pip install -r requirements.txt
 
 # Navigate to the Django project directory
-cd report_backend
+cd jobtracker
 
 # Collect static files
 python manage.py collectstatic --noinput
