@@ -316,6 +316,10 @@ CORS_EXPOSE_HEADERS = [
     'authorization',
 ]
 
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-user-uid",
+]
+
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',

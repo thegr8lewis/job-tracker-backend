@@ -14,16 +14,16 @@ import traceback
 from django.utils import timezone
 
 class ApplicationListCreateView(generics.ListCreateAPIView):
-    queryset = Application.objects.all().order_by('-created_at')
+    serializer_class = ApplicationSerializer
 
-    def get_serializer_class(self):
-        return CreateApplicationSerializer if self.request.method == 'POST' else ApplicationSerializer
+    def get_queryset(self):
+        user_uid = self.request.headers.get('X-User-UID')
+        return Application.objects.filter(user_uid=user_uid).order_by('-created_at')
 
-    def create(self, request, *args, **kwargs):
-        try:
-            return super().create(request, *args, **kwargs)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        user_uid = self.request.headers.get('X-User-UID')
+        serializer.save(user_uid=user_uid)
+
 
 class ApplicationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Application.objects.all()
