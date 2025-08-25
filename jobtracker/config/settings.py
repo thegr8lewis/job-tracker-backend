@@ -165,6 +165,7 @@ from dotenv import load_dotenv
 import environ
 import dj_database_url
 from corsheaders.defaults import default_headers
+from celery.schedules import crontab
 
 env = environ.Env()
 environ.Env.read_env()
@@ -353,3 +354,28 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     X_FRAME_OPTIONS = 'DENY'
+
+
+# Use local Redis or your Redis Cloud URL
+# CELERY_BROKER_URL = "redis://localhost:6379/0"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+
+# Celery beat (example schedule)
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    "fetch-jobs-daily-7am": {
+        "task": "applications.tasks.fetch_jobs_daily",
+        "schedule": crontab(minute=0, hour=7),  # every day at 07:00
+    },
+}
+
+JOOBLE_API_KEY = os.environ.get("JOOBLE_API_KEY")
+ADZUNA_APP_ID = os.environ.get("ADZUNA_APP_ID")
+ADZUNA_APP_KEY = os.environ.get("ADZUNA_APP_KEY")
+RAPIDAPI_KEY = os.environ.get("RAPIDAPI_KEY")
+WORKABLE_TOKEN = os.environ.get("WORKABLE_TOKEN")
+
+# Debug API key status
+print(f"[DEBUG] JOOBLE_API_KEY: {'SET' if JOOBLE_API_KEY else 'NOT SET'}")
+print(f"[DEBUG] ADZUNA_APP_ID: {'SET' if ADZUNA_APP_ID else 'NOT SET'}")
+print(f"[DEBUG] ADZUNA_APP_KEY: {'SET' if ADZUNA_APP_KEY else 'NOT SET'}")
