@@ -156,6 +156,10 @@ from .serializers import (
     EmailLogSerializer
 )
 
+class HealthCheckView(APIView):
+    def get(self, request):
+        return Response({"status": "ok"})
+
 class ApplicationListCreateView(generics.ListCreateAPIView):
     serializer_class = ApplicationSerializer
     def get_queryset(self):

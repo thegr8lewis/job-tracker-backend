@@ -65,6 +65,7 @@ from .views import (
     UserEmailSettingsView,
     ApplicationEmailLogsView,
     TriggerEmailProcessingView,
+    HealthCheckView
 )
 
 urlpatterns = [
@@ -97,4 +98,5 @@ urlpatterns = [
     
     # Email logs endpoint (make sure this is included)
     path('<int:pk>/email-logs/', ApplicationEmailLogsView.as_view(), name='application-email-logs'),
+    path("health/", HealthCheckView.as_view(), name="health"),
 ]
