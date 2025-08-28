@@ -272,16 +272,13 @@ class GmailCallbackView(APIView):
         code = request.GET.get('code')
         state = request.GET.get('state')
         
-        if not code or not state:
-            return Response({"error": "Missing code or state"}, status=status.HTTP_400_BAD_REQUEST)
-        
         gmail_service = GmailService()
-        success = gmail_service.handle_oauth_callback(code, state)
+        success = gmail_service.handle_oauth_callback(code, state) if code and state else False
         
         if success:
-            return Response({"success": "Gmail connected successfully"})
+            return render(request, "email_success.html")
         else:
-            return Response({"error": "Failed to connect Gmail"}, status=status.HTTP_400_BAD_REQUEST)
+            return render(request, "email_error.html", {"message": "Failed to connect Gmail"})
 
 class GmailDisconnectView(APIView):
     def post(self, request):
