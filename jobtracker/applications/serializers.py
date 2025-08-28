@@ -1,24 +1,62 @@
 # from rest_framework import serializers
 # from .models import Application, TimelineEvent, Job, JobFilter
 # from django.utils import timezone
+# from functools import partial
+# from .models import UserEmailSettings, EmailLog
 
+# class UserEmailSettingsSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserEmailSettings
+#         fields = ['email_tracking_enabled', 'gmail_connected', 'auto_process_emails', 'last_email_check']
+#         read_only_fields = ['gmail_connected', 'last_email_check']
+
+# class EmailLogSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = EmailLog
+#         fields = ['id', 'sender', 'subject', 'classification', 'confidence_score', 
+#                  'processed_at', 'status_updated', 'llm_response']
+        
+# # ---------------------------
+# # Timeline Event Serializer
+# # ---------------------------
 # class TimelineEventSerializer(serializers.ModelSerializer):
 #     date = serializers.DateField(format="%Y-%m-%d")
+
 #     class Meta:
 #         model = TimelineEvent
 #         fields = ['id', 'event_type', 'title', 'description', 'date', 'completed', 'created_at']
 #         read_only_fields = ('created_at',)
 
 
+# class AddTimelineEventSerializer(serializers.ModelSerializer):
+#     date = serializers.DateField(
+#         required=False,
+#         default=partial(lambda: timezone.localdate()),  # FIXED
+#         input_formats=['%Y-%m-%d']
+#     )
+
+#     class Meta:
+#         model = TimelineEvent
+#         fields = ['event_type', 'title', 'description', 'date', 'completed']
+#         extra_kwargs = {
+#             'event_type': {'required': True},
+#             'title': {'required': True},
+#             'description': {'required': False},
+#             'completed': {'required': False, 'default': False},
+#         }
+
+# # ---------------------------
+# # Application Serializers
+# # ---------------------------
 # class ApplicationSerializer(serializers.ModelSerializer):
 #     timeline_events = TimelineEventSerializer(many=True, read_only=True)
+
 #     class Meta:
 #         model = Application
 #         fields = [
-#             'id',
-#             'user_uid',
-#             'company_name', 'job_title', 'job_posting_url', 'location',
-#             'salary_range', 'application_date', 'status', 'notes', 'resume',
+#             'id', 'user_uid', 'company_name', 'job_title',
+#             'job_posting_url', 'location', 'salary_range',
+#             'application_date', 'status', 'notes', 'resume',
 #             'cover_letter', 'created_at', 'updated_at', 'timeline_events'
 #         ]
 #         read_only_fields = ('created_at', 'updated_at')
@@ -26,16 +64,19 @@
 
 # class CreateApplicationSerializer(serializers.ModelSerializer):
 #     user_uid = serializers.CharField(required=True)
-#     application_date = serializers.DateField(required=False, default=timezone.now().date, input_formats=['%Y-%m-%d'])
+#     application_date = serializers.DateField(
+#         required=False,
+#         default=partial(lambda: timezone.localdate()),
+#         input_formats=['%Y-%m-%d']
+#     )
 #     status = serializers.CharField(required=False, default='applied')
 
 #     class Meta:
 #         model = Application
 #         fields = [
-#             'user_uid',
-#             'company_name', 'job_title', 'job_posting_url', 'location',
-#             'salary_range', 'application_date', 'status', 'notes',
-#             'resume', 'cover_letter'
+#             'user_uid', 'company_name', 'job_title', 'job_posting_url',
+#             'location', 'salary_range', 'application_date', 'status',
+#             'notes', 'resume', 'cover_letter'
 #         ]
 #         extra_kwargs = {
 #             'resume': {'required': False, 'allow_null': True},
@@ -46,8 +87,34 @@
 #             'notes': {'required': False, 'allow_blank': True},
 #         }
 
+#     def validate(self, data):
+#         request = self.context.get('request')
+#         if not request:
+#             raise serializers.ValidationError("Request context is missing")
+
+#         user_uid = request.headers.get('X-User-UID')
+#         job_url = data.get('job_posting_url')
+
+#         if job_url and Application.objects.filter(user_uid=user_uid, job_posting_url=job_url).exists():
+#             raise serializers.ValidationError("You have already saved this job.")
+
+#         return data
+
+
+
+#     def create(self, validated_data):
+#         # Ensure a date is stored, not datetime
+#         if isinstance(validated_data.get("application_date"), timezone.datetime):
+#             validated_data["application_date"] = validated_data["application_date"].date()
+#         return super().create(validated_data)
+
 
 # class UpdateApplicationSerializer(serializers.ModelSerializer):
+#     application_date = serializers.DateField(
+#         required=False,
+#         input_formats=['%Y-%m-%d']
+#     )
+
 #     class Meta:
 #         model = Application
 #         fields = [
@@ -67,21 +134,13 @@
 #     status = serializers.CharField(max_length=20)
 
 
-# class AddTimelineEventSerializer(serializers.ModelSerializer):
-#     date = serializers.DateField(required=False, default=timezone.now().date, input_formats=['%Y-%m-%d'])
-#     class Meta:
-#         model = TimelineEvent
-#         fields = ['event_type', 'title', 'description', 'date', 'completed']
-#         extra_kwargs = {
-#             'event_type': {'required': True},
-#             'title': {'required': True},
-#             'description': {'required': False},
-#             'completed': {'required': False, 'default': False},
-#         }
-
-
-# # ✅ Updated Job serializer
+# # ---------------------------
+# # Job Serializer
+# # ---------------------------
 # class JobSerializer(serializers.ModelSerializer):
+#     posted_at = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%SZ", required=False)
+#     fetched_at = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%SZ", required=False)
+
 #     class Meta:
 #         model = Job
 #         fields = [
@@ -91,8 +150,12 @@
 #         ]
 
 
-# # ✅ Filters
+# # ---------------------------
+# # Job Filter Serializer
+# # ---------------------------
 # class JobFilterSerializer(serializers.ModelSerializer):
+#     providers = serializers.ListField(child=serializers.CharField(), required=False)
+
 #     class Meta:
 #         model = JobFilter
 #         fields = [
@@ -104,9 +167,50 @@
 
 
 from rest_framework import serializers
-from .models import Application, TimelineEvent, Job, JobFilter
 from django.utils import timezone
 from functools import partial
+from .models import (
+    Application, TimelineEvent, Job, JobFilter,
+    UserEmailSettings, EmailLog
+)
+
+
+# ---------------------------
+# User Email Settings Serializer
+# ---------------------------
+class UserEmailSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserEmailSettings
+        fields = [
+            'email_tracking_enabled',
+            'gmail_connected',
+            'auto_process_emails',
+            'last_email_check'
+        ]
+        read_only_fields = ['gmail_connected', 'last_email_check']
+
+
+# ---------------------------
+# Email Log Serializer
+# ---------------------------
+class EmailLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailLog
+        fields = [
+            'id',
+            'sender_email',
+            'sender_name',
+            'subject',
+            'snippet',
+            'received_date',
+            'classification',
+            'confidence_score',
+            'processed_at',
+            'status_updated',
+            'timeline_created',
+            'user_reviewed'
+        ]
+
 
 # ---------------------------
 # Timeline Event Serializer
@@ -116,14 +220,22 @@ class TimelineEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TimelineEvent
-        fields = ['id', 'event_type', 'title', 'description', 'date', 'completed', 'created_at']
+        fields = [
+            'id',
+            'event_type',
+            'title',
+            'description',
+            'date',
+            'completed',
+            'created_at'
+        ]
         read_only_fields = ('created_at',)
 
 
 class AddTimelineEventSerializer(serializers.ModelSerializer):
     date = serializers.DateField(
         required=False,
-        default=partial(lambda: timezone.localdate()),  # FIXED
+        default=partial(lambda: timezone.localdate()),
         input_formats=['%Y-%m-%d']
     )
 
@@ -136,6 +248,7 @@ class AddTimelineEventSerializer(serializers.ModelSerializer):
             'description': {'required': False},
             'completed': {'required': False, 'default': False},
         }
+
 
 # ---------------------------
 # Application Serializers
@@ -192,10 +305,7 @@ class CreateApplicationSerializer(serializers.ModelSerializer):
 
         return data
 
-
-
     def create(self, validated_data):
-        # Ensure a date is stored, not datetime
         if isinstance(validated_data.get("application_date"), timezone.datetime):
             validated_data["application_date"] = validated_data["application_date"].date()
         return super().create(validated_data)
