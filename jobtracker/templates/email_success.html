@@ -357,7 +357,37 @@
             50% { opacity: 0.7; transform: scale(1.2); }
         }
 
-        /* Responsive design */
+        .countdown-container {
+            margin: 30px 0;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .countdown-text {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .countdown-timer {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 10px 0;
+            animation: countdownPulse 1s ease-in-out infinite;
+        }
+
+        .countdown-subtext {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        @keyframes countdownPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
         @media (max-width: 768px) {
             .container {
                 padding: 40px 24px;
@@ -426,9 +456,55 @@
             <h3>🎉 What's Next?</h3>
             <p>Start tracking your job applications, receive notifications, and stay organized with your job search journey.</p>
         </div>
+        
+        <div class="countdown-container">
+            <div class="countdown-text">Redirecting to settings in</div>
+            <div class="countdown-timer" id="countdown">5</div>
+            <div class="countdown-subtext">seconds</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="window.location.href='https://jobtracker-frontendd.onrender.com/settings'">
+                ⚙️ Go to Settings Now
+            </button>
+            <button class="btn btn-secondary" onclick="cancelRedirect()">
+                ❌ Cancel Redirect
+            </button>
+        </div>
     </div>
 
     <script>
+        // Auto-redirect functionality
+        let countdownTimer;
+        let timeLeft = 5;
+        let redirectCancelled = false;
+
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            
+            countdownTimer = setInterval(() => {
+                if (redirectCancelled) {
+                    clearInterval(countdownTimer);
+                    return;
+                }
+                
+                timeLeft--;
+                countdownElement.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    window.location.href = 'https://jobtracker-frontendd.onrender.com/settings';
+                }
+            }, 1000);
+        }
+
+        function cancelRedirect() {
+            redirectCancelled = true;
+            clearInterval(countdownTimer);
+            document.querySelector('.countdown-container').style.opacity = '0.5';
+            document.querySelector('.countdown-text').textContent = 'Redirect cancelled';
+        }
+
         // Create falling confetti
         function createConfetti() {
             for (let i = 0; i < 50; i++) {
@@ -448,6 +524,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Trigger confetti after page loads
             setTimeout(createConfetti, 500);
+            
+            // Start countdown after celebration animations
+            setTimeout(startCountdown, 3000);
             
             // Mouse movement parallax effect
             document.addEventListener('mousemove', function(e) {
