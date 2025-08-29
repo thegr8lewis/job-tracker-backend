@@ -364,20 +364,25 @@ def process_user_emails(user_uid: str):
                     continue
 
                 # Create EmailLog entry
-                email_log = EmailLog.objects.create(
-                    application=application,
-                    user_uid=user_uid,
+                
+                email_log, created = EmailLog.objects.update_or_create(
                     email_id=email_data['email_id'],
-                    thread_id=email_data.get('thread_id'),
-                    sender_email=email_data['sender_email'],
-                    sender_name=email_data.get('sender_name'),
-                    subject=email_data['subject'],
-                    snippet=email_data.get('snippet', ''),
-                    received_date=email_data.get('received_date') or timezone.now(),
-                    classification=analysis.get('classification'),
-                    confidence_score=analysis.get('confidence'),
-                    ai_analysis=analysis,
-                    suggested_status=analysis.get('suggested_status')
+                    defaults={
+                        "application": application,
+                        "user_uid": user_uid,
+                        "thread_id": email_data.get("thread_id"),
+                        "sender_email": email_data["sender_email"],
+                        "sender_name": email_data.get("sender_name"),
+                        "subject": email_data["subject"],
+                        "snippet": email_data.get("snippet", ""),
+                        "received_date": email_data.get("received_date") or timezone.now(),
+                        "classification": analysis.get("classification"),
+                        "confidence_score": analysis.get("confidence"),
+                        "ai_analysis": analysis,
+                        "suggested_status": analysis.get("suggested_status"),
+                        "processed": True,
+                        "processed_at": timezone.now(),
+                    }
                 )
 
                 # Create timeline event for email
