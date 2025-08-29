@@ -442,7 +442,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     "process-emails-every-6-hours": {
         "task": "applications.tasks.process_all_users_emails",
-        "schedule": crontab(minute=0, hour="*/6"),  # every 6 hours
+        "schedule": 120.0,  # every 6 hours
     },
     "fetch-jobs-every-2-minutes": {
         "task": "applications.tasks.fetch_jobs_periodic",
