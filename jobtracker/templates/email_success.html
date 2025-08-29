@@ -2,28 +2,517 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Email Connected</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Connected - JOBTRACKY</title>
     <style>
-        body {
-            font-family: sans-serif;
-            text-align: center;
-            padding-top: 50px;
-            background-color: #f0f8ff;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .message {
-            font-size: 1.5rem;
-            color: green;
-            border: 1px solid #d4edda;
-            background-color: #d4edda;
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated success particles */
+        .particle {
+            position: absolute;
+            background: rgba(72, 187, 120, 0.2);
+            border-radius: 50%;
+            animation: success-float 8s ease-in-out infinite;
+        }
+
+        .particle.star {
+            background: none;
+            color: rgba(255, 215, 0, 0.8);
+            font-size: 20px;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { width: 60px; height: 60px; left: 15%; top: 15%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 40px; height: 40px; right: 20%; top: 25%; animation-delay: 1s; }
+        .particle:nth-child(3) { width: 80px; height: 80px; left: 10%; bottom: 30%; animation-delay: 2s; }
+        .particle:nth-child(4) { width: 50px; height: 50px; right: 15%; bottom: 20%; animation-delay: 1.5s; }
+        .particle:nth-child(5) { left: 25%; top: 40%; animation-delay: 0.5s; }
+        .particle:nth-child(6) { right: 35%; top: 60%; animation-delay: 2.5s; }
+        .particle:nth-child(7) { left: 60%; bottom: 40%; animation-delay: 1.8s; }
+
+        @keyframes success-float {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); opacity: 0.7; }
+            33% { transform: translateY(-30px) rotate(120deg) scale(1.1); opacity: 1; }
+            66% { transform: translateY(-15px) rotate(240deg) scale(0.9); opacity: 0.8; }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+            50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff6b6b;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        .confetti:nth-child(odd) { background: #4ecdc4; }
+        .confetti:nth-child(3n) { background: #45b7d1; }
+        .confetti:nth-child(4n) { background: #f9ca24; }
+        .confetti:nth-child(5n) { background: #6c5ce7; }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 60px 40px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: successSlideIn 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+        }
+
+        @keyframes successSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            letter-spacing: -0.5px;
+            animation: logoSuccess 2s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            border-radius: 2px;
+            animation: successUnderline 1.2s ease-out 0.5s both;
+        }
+
+        @keyframes logoSuccess {
+            0% { filter: brightness(1) drop-shadow(0 0 10px rgba(72, 187, 120, 0.3)); }
+            100% { filter: brightness(1.2) drop-shadow(0 0 25px rgba(72, 187, 120, 0.5)); }
+        }
+
+        @keyframes successUnderline {
+            0% { width: 0; background: linear-gradient(135deg, #667eea, #764ba2); }
+            100% { width: 80px; background: linear-gradient(135deg, #48bb78, #38a169); }
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            animation: successPulse 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: successShimmer 2s infinite;
+        }
+
+        .success-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(72, 187, 120, 0.3) 0%, transparent 70%);
+            animation: rippleSuccess 3s infinite;
+        }
+
+        @keyframes successPulse {
+            0% { 
+                transform: scale(1); 
+                box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.7);
+            }
+            50% { 
+                transform: scale(1.05); 
+                box-shadow: 0 0 0 15px rgba(72, 187, 120, 0);
+            }
+            100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 0 0 rgba(72, 187, 120, 0);
+            }
+        }
+
+        @keyframes successShimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(30deg); }
+        }
+
+        @keyframes rippleSuccess {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .checkmark {
+            animation: checkmarkDraw 1s ease-out 0.8s both;
+        }
+
+        @keyframes checkmarkDraw {
+            0% {
+                transform: scale(0) rotate(45deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .message-title {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .message-text {
+            font-size: 1.1rem;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .success-details {
+            background: rgba(72, 187, 120, 0.1);
+            border: 2px solid rgba(72, 187, 120, 0.2);
+            border-radius: 12px;
             padding: 20px;
-            display: inline-block;
-            border-radius: 8px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .success-details h3 {
+            color: #38a169;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .success-details p {
+            color: #4a5568;
+            font-size: 0.95rem;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(72, 187, 120, 0.1);
+            color: #38a169;
+            border: 2px solid rgba(72, 187, 120, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(72, 187, 120, 0.15);
+            border-color: rgba(72, 187, 120, 0.3);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #48bb78;
+            border-radius: 50%;
+            animation: connectedPulse 2s infinite;
+            box-shadow: 0 0 10px rgba(72, 187, 120, 0.5);
+        }
+
+        @keyframes connectedPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 24px;
+                margin: 20px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .message-title {
+                font-size: 1.6rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .container {
+                background: rgba(26, 32, 44, 0.95);
+            }
+            
+            .message-text {
+                color: #a0aec0;
+            }
+            
+            .success-details p {
+                color: #a0aec0;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="message">
-        Gmail connected successfullyyyyyy!
+    <!-- Animated background particles -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle star">✨</div>
+    <div class="particle star">⭐</div>
+    <div class="particle star">✨</div>
+
+    <div class="container">
+        <div class="status-indicator"></div>
+        
+        <div class="logo">JOBTRACKY</div>
+        
+        <div class="success-icon">
+            <div class="checkmark">✓</div>
+        </div>
+        
+        <h1 class="message-title">Successfully Connected!</h1>
+        <p class="message-text">
+            Your Gmail account has been connected successfully. You can now track and manage your job applications seamlessly.
+        </p>
+        
+        <div class="success-details">
+            <h3>🎉 What's Next?</h3>
+            <p>Start tracking your job applications, receive notifications, and stay organized with your job search journey.</p>
+        </div>
     </div>
+
+    <script>
+        // Create falling confetti
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 6000);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Trigger confetti after page loads
+            setTimeout(createConfetti, 500);
+            
+            // Mouse movement parallax effect
+            document.addEventListener('mousemove', function(e) {
+                const particles = document.querySelectorAll('.particle');
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                particles.forEach((particle, index) => {
+                    const speed = (index + 1) * 0.3;
+                    const xPos = (x - 0.5) * speed * 15;
+                    const yPos = (y - 0.5) * speed * 15;
+                    particle.style.transform += ` translate(${xPos}px, ${yPos}px)`;
+                });
+            });
+
+            // Add click ripple effect to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const ripple = document.createElement('div');
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255, 255, 255, 0.4);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s ease-out;
+                        pointer-events: none;
+                    `;
+                    
+                    this.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+
+            // Add success celebration sound effect (visual feedback)
+            setTimeout(() => {
+                const container = document.querySelector('.container');
+                container.style.animation += ', celebrate 0.3s ease-in-out';
+            }, 1200);
+        });
+
+        // Add celebration animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+            @keyframes celebrate {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.02); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
