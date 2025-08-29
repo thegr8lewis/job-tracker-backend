@@ -421,7 +421,9 @@ if not DEBUG:
 
 # ==================== CELERY CONFIGURATION ====================
 # Redis Configuration (use Redis Cloud for production)
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://default:rBXNYJUvUK1I8csjIehXQMvBSCg0l66v@redis-15212.c93.us-east-1-3.ec2.redns.redis-cloud.com:15212')
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
